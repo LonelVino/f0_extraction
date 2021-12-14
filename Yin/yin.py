@@ -3,10 +3,29 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.signal import fftconvolve
+from scipy.io.wavfile import read as wavread
 from os import sep
-from audio_processing import *
 import time
+import logging
 
+
+def audio_read(audioFilePath):
+    """
+    Read an audio file (from scipy.io.wavfile)
+    A conversation of the aufio file can be processed using SOX (by default set at False).
+
+    Args:
+        :param audioFilePath (str): audio file name (with eventually the full path)
+
+    Returns:
+        * sr: sampling rate of the signal,defines the number of samples per second
+        * sig: list of values of the signal
+    :rtype: tuple
+    """
+    
+    logging.info('Reading of the audio file : ' + audioFilePath)
+    [sr, sig] = wavread(audioFilePath)
+    return sr, sig
 
 
 def differenceFunction_original(x, N, tau_max):
@@ -51,8 +70,9 @@ def differenceFunction_scipy(x, N, tau_max):
     # `cumsum`: Return the cumulative sum of the elements along a given axis
     x_cumsum = np.concatenate((np.array([0]), (x * x).cumsum()))
     # scipy.signal.fftconvolve(in1, in2, mode='full', axes=None)
+    # The algorithm is same as convolve, but faster
     # Convolve in1 and in2 using the fast Fourier transform method, with the output size determined by the mode argument.
-    conv = fftconvolve(x, x[::-1])
+    conv = fftconvolve(x, x[::-1])  # length: 2*w-1
     tmp = x_cumsum[w:0:-1] + x_cumsum[w] - x_cumsum[:w] - 2 * conv[w - 1:]
     return tmp[:tau_max + 1]
 
@@ -91,14 +111,13 @@ def differenceFunction(x, N, tau_max):
 
 def cumulativeMeanNormalizedDifferenceFunction(df, N):
     """
-    Compute cumulative mean normalized difference function (CMND).
-
-    This corresponds to equation (12) in [1.3]
+    Compute cumulative mean normalized difference function (CMND). This corresponds to equation (12) in [1.3]
 
     Args:
         :param df: Difference function
         :param N: length of data
-    :return: cumulative mean normalized difference function
+    
+    Returns cumulative mean normalized difference function
     :rtype: list
     """
 
@@ -157,7 +176,6 @@ def compute_yin(sig, sr, dataFileName=None, w_len=512, w_step=256, f0_min=100, f
     :rtype: tuple
     """
 
-    print('Yin: compute yin algorithm')
     tau_min = int(sr / f0_max)  # the minimal lag = number of samples * minimal sampling period 
     tau_max = int(sr / f0_min)  # the maximal lag = number of samples * maximal sampling period
 
@@ -193,8 +211,8 @@ def compute_yin(sig, sr, dataFileName=None, w_len=512, w_step=256, f0_min=100, f
     return pitches, harmonic_rates, argmins, times
 
 
-def main(audioFileName="whereIam.wav", w_len=1024, w_step=256, f0_min=70, f0_max=200,\
-         harmo_thresh=0.85, audioDir="./", dataFileName=None, verbose=4):
+def main(audioFileName="fluteircam.wav", w_len=1024, w_step=256, f0_min=70, f0_max=200,\
+         harmo_thresh=0.85, audioDir="assets", dataFileName=None, verbose=4):
     """
     Run the computation of the Yin algorithm on a example file.
     Write the results (pitches, harmonic rates, parameters ) in a numpy file.
@@ -216,35 +234,41 @@ def main(audioFileName="whereIam.wav", w_len=1024, w_step=256, f0_min=70, f0_max
     else:
         audioFilePath = audioFileName
 
-    sr, sig = audio_read(audioFilePath, formatsox=False)
+    sr, sig = audio_read(audioFilePath)
 
     start = time.time()
     pitches, harmonic_rates, argmins, times = compute_yin(sig, sr, dataFileName, w_len, w_step, f0_min, f0_max, harmo_thresh)
     end = time.time()
-    print("Yin computed in: ", end - start)
+    print("[INFO] Yin computed in: %.4f seconds"%(end - start))
 
     duration = len(sig)/float(sr)
-
-    if verbose >3:
+    
+    if verbose > 3:
+        fig = plt.gcf()
+        fig.set_size_inches(10.5, 18.5)
+        fig.savefig('pics/YIN.png', dpi=100)
         ax1 = plt.subplot(4, 1, 1)
         ax1.plot([float(x) * duration / len(sig) for x in range(0, len(sig))], sig)
-        ax1.set_title('Audio data')
-        ax1.set_ylabel('Amplitude')
+        ax1.set_title('Audio data'); ax1.set_ylabel('Amplitude')
         ax2 = plt.subplot(4, 1, 2)
         ax2.plot([float(x) * duration / len(pitches) for x in range(0, len(pitches))], pitches)
-        ax2.set_title('F0')
-        ax2.set_ylabel('Frequency (Hz)')
+        ax2.set_title('F0'); ax2.set_ylabel('Frequency (Hz)')
         ax3 = plt.subplot(4, 1, 3, sharex=ax2)
         ax3.plot([float(x) * duration / len(harmonic_rates) for x in range(0, len(harmonic_rates))], harmonic_rates)
         ax3.plot([float(x) * duration / len(harmonic_rates) for x in range(0, len(harmonic_rates))], [harmo_thresh] * len(harmonic_rates), 'r')
-        ax3.set_title('Harmonic rate')
-        ax3.set_ylabel('Rate')
+        ax3.set_title('Harmonic rate'); ax3.set_ylabel('Rate')
         ax4 = plt.subplot(4, 1, 4, sharex=ax2)
         ax4.plot([float(x) * duration / len(argmins) for x in range(0, len(argmins))], argmins)
         ax4.set_title('Index of minimums of CMND')
-        ax4.set_ylabel('Frequency (Hz)')
-        ax4.set_xlabel('Time (seconds)')
+        ax4.set_ylabel('Frequency (Hz)'); ax4.set_xlabel('Time (seconds)')
+        
+        plt.subplots_adjust(left=0.1, bottom=0.1, 
+                    right=0.9, top=0.9, 
+                    wspace=0.4, hspace=0.4)
         plt.show()
+        
+    # Shut down the logger
+    logging.shutdown()
 
 
 

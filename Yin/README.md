@@ -4,6 +4,8 @@
 
 Fast Python implementation of the Yin algorithm: a fundamental frequency estimator.
 
+The sampling schema is as following:
+![YIN_sampling](/assets/img/YIN_sampling.png)
 
 ## Usage
 
