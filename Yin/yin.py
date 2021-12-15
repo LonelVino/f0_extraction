@@ -18,7 +18,7 @@ def audio_read(audioFilePath):
         :param audioFilePath (str): audio file name (with eventually the full path)
 
     Returns:
-        * sr: sampling rate of the signal,defines the number of samples per second
+        * sr: sampling rate of the signal, defines the number of samples per second
         * sig: list of values of the signal
     :rtype: tuple
     """

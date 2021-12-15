@@ -1,0 +1,18 @@
+Todos:
+    
+    News:
+    ☐ Fix the relative import error
+    ☐ Add comments to functions
+
+    ☐ Explain the theory of FFT clearly @start(After reading SWIPE) @end(??) 
+        ☐ [Fix problem] The scale of 2 methods are different
+        ☐ Should we normalize the original signal at the beginning (/2**15)
+        ☐ [Fix problem] IFFT much different with the origin one (Scale, Shape, Amplitude)
+    ☐ Load Dataset and Evaluate
+
+    Done:
+    ✔ Perform additive noise evaluation. @start(17h30) @end(17h50) @done(21-12-14 22:53)
+    ✔ Write file and Play Sound with python  @end(23h40) @done(21-12-15 12:45)
+    
+    Cancle:
+    ✘ Use IFFT rebuild the sound wave from the estimated f0 @start(11h30) @cancelled(21-12-14 17:28)
