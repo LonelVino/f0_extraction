@@ -212,7 +212,7 @@ def compute_yin(sig, sr, dataFileName=None, w_len=512, w_step=256, f0_min=100, f
 
 
 def main(audioFileName="fluteircam.wav", w_len=1024, w_step=256, f0_min=70, f0_max=200,\
-         harmo_thresh=0.85, audioDir="assets", dataFileName=None, verbose=4):
+         harmo_thresh=0.85, audioDir="assets/audio", dataFileName=None, verbose=4):
     """
     Run the computation of the Yin algorithm on a example file.
     Write the results (pitches, harmonic rates, parameters ) in a numpy file.
@@ -246,7 +246,7 @@ def main(audioFileName="fluteircam.wav", w_len=1024, w_step=256, f0_min=70, f0_m
     if verbose > 3:
         fig = plt.gcf()
         fig.set_size_inches(10.5, 18.5)
-        fig.savefig('pics/YIN.png', dpi=100)
+        fig.savefig('assets/img/YIN.png', dpi=100)
         ax1 = plt.subplot(4, 1, 1)
         ax1.plot([float(x) * duration / len(sig) for x in range(0, len(sig))], sig)
         ax1.set_title('Audio data'); ax1.set_ylabel('Amplitude')

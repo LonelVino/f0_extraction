@@ -3,6 +3,7 @@ from playsound import playsound
 from scipy.fft import ifft
 from scipy.io.wavfile import write
 from tqdm import tqdm 
+import matplotlib.pyplot as plt
 
 class Restore:
     '''
@@ -13,8 +14,7 @@ class Restore:
                 used to rescale the processed audio
         :params fs_rate (int16): sampling rate of the signal, defines the number of samples per second 
     '''
-    def __init__(self, max_dist, amp_range, fs_rate):
-        self.max_dist = max_dist
+    def __init__(self, amp_range, fs_rate):
         self.amp_range = amp_range
         self.fs_rate = fs_rate
     
@@ -35,29 +35,35 @@ class Restore:
         return signal_restored
 
 
-    def nearest_approximate(self, signal_, outlier, std, approx_num):
-        signal = np.copy(signal_)
-        idx = np.where(outlier)[0]
-        for i in idx:
-            gauss = np.random.normal(0,std)
-            appr = np.mean(abs(signal[i-approx_num:i])) if i-approx_num >= 0 else np.mean(abs(signal[:i]))
-            signal[i] = appr + gauss
-        return signal
-
-
-    def signal_process(self, signal_restored, approx_num=50):
-        '''
-        Process the restore audio: resize outlier value, rescale to the same size
-        '''
-        mean = np.mean(signal_restored[:])
-        standard_deviation = np.std(signal_restored)
-        distance_from_mean = abs(signal_restored - mean)
-        outlier = distance_from_mean > self.max_dist
-        signal_appr = self.nearest_approximate(signal_restored, outlier, std=standard_deviation, approx_num=approx_num)
+    def signal_process(self, signal_restored, signal_original):
+        # Process the restore audio: resize outlier value, rescale to the same size
+        signal_appr = np.copy(signal_restored)
+        # Process the outlier
+        # Rescale into original amplitude
         signal_appr *= int(self.amp_range/(max(signal_appr)-min(signal_appr)))
         signal_appr = signal_appr.astype(np.int16)
         return signal_appr
     
+    
+    def compare_signal(self, total_time, signal_original, signal_restored, signal_processed):
+        total_t = np.arange(0, total_time, 1/self.fs_rate)
+        plt.figure(figsize=(6,12))
+        plt.subplots_adjust(left=0.1, right=0.9, 
+                            bottom=0.1, top=0.9, 
+                            wspace=0.4, hspace=0.3)
+
+        ax1, ax2, ax3 = plt.subplot(3,1,1), plt.subplot(3,1,2), plt.subplot(3,1,3)
+        ax1.plot(total_t[:len(signal_restored)], signal_restored, "b") # plotting the signal
+        ax1.set_xlabel('Time'); ax1.set_ylabel('Amplitude')
+        ax1.set_title('Raw Restored Audio')
+        ax2.plot(total_t[:len(signal_processed)], signal_processed, "b") # plotting the signal
+        ax2.set_xlabel('Time'); ax2.set_ylabel('Amplitude')
+        ax2.set_title('Processed Restored Audio')
+        ax3.plot(total_t, signal_original[:len(total_t)], "b") # plotting the signal
+        ax3.set_xlabel('Time'); ax3.set_ylabel('Amplitude')
+        ax3.set_title('Orignal Audio')
+        
+        
     def save_audio(self, signal, audio_path, is_play=False):
         write(audio_path, self.fs_rate, signal)
         if is_play:

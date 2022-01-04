@@ -34,7 +34,6 @@ pip install -r requirements.txt
 ## Usage
 - [YIN Manually](./YIN/README.md)
 
-
 ## Reference
 
 1. ^A. de Cheveigné and H. Kawahara, "YIN, a fundamental frequency estimator for speech and music", Journal of the Acoustical Society of America, 2002.

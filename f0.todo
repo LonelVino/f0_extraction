@@ -1,6 +1,13 @@
 Todos:
     
     News:
+    ☐ Detect the silence and energy with autocorrelation  @high
+    ☐ Analysis tempo (black/white/rond) 
+    ☐ Analysis vibration (freq / amplitude)
+    ☐ Try other methods: Autocorr Element / FFT / BURG / MUSIC)
+    ☐ Evaluate the performance of FFT  @high
+    ☐ Remove the outliers
+
     ☐ Fix the relative import error
     ☐ Add comments to functions
 
@@ -9,6 +16,7 @@ Todos:
         ☐ Should we normalize the original signal at the beginning (/2**15)
         ☐ [Fix problem] IFFT much different with the origin one (Scale, Shape, Amplitude)
     ☐ Load Dataset and Evaluate
+    
 
     Done:
     ✔ Perform additive noise evaluation. @start(17h30) @end(17h50) @done(21-12-14 22:53)
