@@ -1,15 +1,16 @@
 Todos:
     
     News:
-    ☐ Detect the silence and energy with autocorrelation  @high
+    ☐ Basic Auto-Correlation  @high
+    ☐ Detect the silence and energy with autocorrelation  @high 
     ☐ Analysis tempo (black/white/rond) 
     ☐ Analysis vibration (freq / amplitude)
     ☐ Try other methods: Autocorr Element / FFT / BURG / MUSIC)
-    ☐ Evaluate the performance of FFT  @high
-    ☐ Remove the outliers
 
-    ☐ Fix the relative import error
-    ☐ Add comments to functions
+    # Improve Accuracy
+    ☐ Fix the 2 inaccurate parts (FFT) 
+    ☐ Fix YIN problem
+    ☐ Numerical Evaluation of f0 estimation
 
     ☐ Explain the theory of FFT clearly @start(After reading SWIPE) @end(??) 
         ☐ [Fix problem] The scale of 2 methods are different
@@ -21,6 +22,8 @@ Todos:
     Done:
     ✔ Perform additive noise evaluation. @start(17h30) @end(17h50) @done(21-12-14 22:53)
     ✔ Write file and Play Sound with python  @end(23h40) @done(21-12-15 12:45)
-    
+    ✔ Remove the outliers @done(22-01-04 21:24)
+
+
     Cancle:
-    ✘ Use IFFT rebuild the sound wave from the estimated f0 @start(11h30) @cancelled(21-12-14 17:28)
+    ✘ Use IFFT rebuild the sound wave from the estimated f0 @start(11h30) @cancelled(21-12-14 17:28)e
