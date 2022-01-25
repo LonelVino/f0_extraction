@@ -2,12 +2,10 @@
 
 ![](https://img.shields.io/badge/Python-v3.8-orange) ![](https://img.shields.io/badge/Ubuntu-E95420?style=for-the-badge&logo=ubuntu&logoColor=white)
 
-A Synthetical project with kinds of methods of fundamental frequency extraction, with YIN. SWIPE. CREPE, SPICE.
+A Synthetical project with kinds of methods of fundamental frequency extraction, with YIN. SWIPE.
 
-- **YIN** (Signal Processing, Time Domain)
-- **SWIPE** (Signal Processing, Frequency Domain)
-- **CREPE**  (Machine Learning, Time Domain, Supervision)
-- **Spice** (Machine Learning, Frequency Domain, Self-Supervision)
+- **YIN** (Signal Processing, Time Domain, Auto-correlation)
+- **SWIPE** (Signal Processing, Frequency Domain, FFT)
 
 ## Preview
 The pitch is one of the three major properties of the sound (volume, sound, tone, tone). And the pitch is determined by the Fundamental Frequency $f_0$.
@@ -19,11 +17,15 @@ The method of extracting can be generally divided into **time domain method** an
 - Time domain method: The input is the waveform of sound; The basic  principle is to find the **minimum positive cycle** of waveforms.
 - Frequency domain method: First perform <u>Fourier transform</u> to obtain a spectrum of signal (with amplitude spectrum, discard the phase spectrum). There will be spikes at $f_0$ in the spectrum, so the basic principle is to require the **greatest common divisor** of these spikes.
 
+#### Methods Overview
+
+![PSD Methods](assets/img/PSD_structure.png)
+
 ## Prerequisites
 
  * [Numpy](http://www.numpy.org/)
  * [Scipy](http://www.scipy.org/)
- * [Matlplotlib](http://matplotlib.org/) (for graphing)
+ * [Matlplotlib](http://matplotlib.org/)
 
 ```bash
 git clone git@github.com:LonelVino/f0_extraction.git
@@ -32,7 +34,20 @@ pip install -r requirements.txt
 ```
 
 ## Usage
-- [YIN Manually](./YIN/README.md)
+
+- **Direct (Periodogram)**
+
+  `python3 FFT/FFT.py`
+
+- **All PSD methods**
+
+  `python3 all_PSD -A [audio file name]`
+
+  for example: `python3 all PSD -A fluteircam.wav`
+
+- **Seperate crossed signal into 2 audio**
+
+  `python3 separation.py`
 
 ## Reference
 
